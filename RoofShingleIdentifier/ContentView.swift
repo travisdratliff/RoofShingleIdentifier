@@ -14,8 +14,7 @@ struct ContentView: View {
             Tab("", systemImage: "camera", value: 1) {
                 NavigationStack {
                     VStack {
-                        Spacer()
-                        Text("Camera")
+                        
                         Button {
                             
                         } label: {
