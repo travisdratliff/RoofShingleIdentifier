@@ -9,9 +9,11 @@ import SwiftUI
 import AVFoundation
 
 struct ContentView: View {
+    //
     @State var camera = CameraManager()
     @State var captureSession: AVCaptureSession?
     @State var selectedTab = 1
+    //
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab("", systemImage: "camera", value: 1) {
@@ -20,12 +22,6 @@ struct ContentView: View {
                         if camera.permissionGranted, let captureSession {
                             CameraPreview(session: captureSession)
                                 .ignoresSafeArea()
-                            VStack {
-                                Spacer()
-                                Text(camera.isRunning ? "Camera Active" : "Starting...")
-                                    .foregroundStyle(.white)
-                                    .padding()
-                            }
                         } else {
                             ContentUnavailableView(
                                 "Camera Access Required",
@@ -40,7 +36,7 @@ struct ContentView: View {
                         
                     } label: {
                         Image(systemName: "camera.circle.fill")
-                            .font(.largeTitle)
+                            .font(.system(size: 100))
                     }
                 }
                 .padding(.vertical)
