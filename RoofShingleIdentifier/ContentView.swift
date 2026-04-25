@@ -6,25 +6,44 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct ContentView: View {
+    @State var camera = CameraManager()
+    @State var captureSession: AVCaptureSession?
     @State var selectedTab = 1
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab("", systemImage: "camera", value: 1) {
-                NavigationStack {
-                    VStack {
-                        
-                        Button {
-                            
-                        } label: {
-                            Circle()
-                                .foregroundStyle(.red)
-                                .frame(height: 100)
+                VStack {
+                    ZStack {
+                        if camera.permissionGranted, let captureSession {
+                            CameraPreview(session: captureSession)
+                                .ignoresSafeArea()
+                            VStack {
+                                Spacer()
+                                Text(camera.isRunning ? "Camera Active" : "Starting...")
+                                    .foregroundStyle(.white)
+                                    .padding()
+                            }
+                        } else {
+                            ContentUnavailableView(
+                                "Camera Access Required",
+                                systemImage: "camera.fill",
+                                description: Text("Please allow camera access in Settings.")
+                            )
                         }
                     }
-                    .padding(.vertical)
+                    .onAppear { camera.restart() }
+                    .onDisappear { camera.stop() }
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "camera.circle.fill")
+                            .font(.largeTitle)
+                    }
                 }
+                .padding(.vertical)
             }
             Tab("", systemImage: "note", value: 2) {
                 NavigationStack {
@@ -43,6 +62,9 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+        .task {
+            captureSession = await camera.session
         }
     }
 }
